@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.8.1] — 2026-02-26
+
+### Added
+
+- 9 new Storybook stories: Legend, AnnotationLayer, DataTable, DropZone, ExportMenu, Minimap, Tooltip, StackedView, SpectrumCanvas (15 total, 100% component coverage)
+- `.prettierrc` and `.editorconfig` for consistent formatting
+- `SECURITY.md` with vulnerability reporting policy
+- `.github/FUNDING.yml` for GitHub Sponsors
+- GitHub issue templates (bug report, feature request)
+- Pull request template with checklist
+
+### Changed
+
+- CHANGELOG.md now documents all versions 0.1.0 through 1.8.0
+- CONTRIBUTING.md updated: pnpm → npm, added Storybook development section
+- CITATION.cff version updated to 1.8.0 with new keywords
+- Removed empty `demo/` and `paper/` directories
+
 ## [1.8.0] — 2026-02-26
 
 ### Changed

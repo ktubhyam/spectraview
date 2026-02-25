@@ -68,6 +68,26 @@ export interface Region {
   color?: string;
 }
 
+/** A text annotation placed on the chart. */
+export interface Annotation {
+  /** Unique identifier. */
+  id: string;
+  /** Data-space x position (anchor point). */
+  x: number;
+  /** Data-space y position (anchor point). */
+  y: number;
+  /** Annotation text. */
+  text: string;
+  /** Pixel offset from anchor point [dx, dy]. Defaults to [0, -20]. */
+  offset?: [number, number];
+  /** Font size in pixels. Defaults to 11. */
+  fontSize?: number;
+  /** Text color (CSS). Defaults to theme text color. */
+  color?: string;
+  /** Show anchor line from text to data point. Defaults to true. */
+  showAnchorLine?: boolean;
+}
+
 /** Current zoom/pan view state. */
 export interface ViewState {
   /** Visible x-axis domain [min, max]. */
@@ -113,6 +133,10 @@ export interface SpectraViewProps {
   peaks?: Peak[];
   /** Highlighted regions. */
   regions?: Region[];
+  /** Text annotations to display on the chart. */
+  annotations?: Annotation[];
+  /** Snap crosshair to nearest spectrum data point. Defaults to true. */
+  snapCrosshair?: boolean;
   /** X-axis label override. */
   xLabel?: string;
   /** Y-axis label override. */

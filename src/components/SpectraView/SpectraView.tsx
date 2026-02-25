@@ -26,7 +26,10 @@ import { AxisLayer } from "../AxisLayer/AxisLayer";
 import { PeakMarkers } from "../PeakMarkers/PeakMarkers";
 import { RegionSelector } from "../RegionSelector/RegionSelector";
 import { Crosshair } from "../Crosshair/Crosshair";
-import type { CrosshairPosition } from "../Crosshair/Crosshair";
+import type { CrosshairPosition, SnapPoint } from "../Crosshair/Crosshair";
+import { AnnotationLayer } from "../AnnotationLayer/AnnotationLayer";
+import { snapToNearestSpectrum } from "../../utils/snap";
+import { getSpectrumColor } from "../../utils/colors";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { Legend } from "../Legend/Legend";
 import { DropZone } from "../DropZone/DropZone";
@@ -92,6 +95,7 @@ export function SpectraView(props: SpectraViewProps) {
     spectra,
     peaks = [],
     regions = [],
+    annotations = [],
     onPeakClick,
     onViewChange,
     onCrosshairMove,
@@ -99,6 +103,7 @@ export function SpectraView(props: SpectraViewProps) {
     onFileDrop,
     onRegionSelect,
     canvasRef,
+    snapCrosshair = true,
   } = props;
 
   // Responsive sizing
@@ -196,6 +201,7 @@ export function SpectraView(props: SpectraViewProps) {
 
   // Crosshair state — managed here so the zoom rect handles all mouse events (BUG-2 fix)
   const [crosshairPos, setCrosshairPos] = useState<CrosshairPosition | null>(null);
+  const [snapPointState, setSnapPointState] = useState<SnapPoint | null>(null);
   const onCrosshairMoveRef = useRef(onCrosshairMove);
   onCrosshairMoveRef.current = onCrosshairMove;
 
@@ -208,13 +214,40 @@ export function SpectraView(props: SpectraViewProps) {
       const dataX = zoomedXScale.invert(px);
       const dataY = zoomedYScale.invert(py);
       setCrosshairPos({ px, py, dataX, dataY });
-      onCrosshairMoveRef.current?.(dataX, dataY);
+
+      // Snap to nearest spectrum data point
+      if (snapCrosshair && spectra.length > 0) {
+        const snap = snapToNearestSpectrum(
+          spectra,
+          dataX,
+          py,
+          zoomedXScale,
+          zoomedYScale,
+        );
+        if (snap && snap.distance < 50) {
+          const spIdx = spectra.findIndex((s) => s.id === snap.spectrumId);
+          setSnapPointState({
+            px: zoomedXScale(snap.x),
+            py: zoomedYScale(snap.y),
+            dataX: snap.x,
+            dataY: snap.y,
+            color: spectra[spIdx]?.color ?? getSpectrumColor(spIdx),
+          });
+          onCrosshairMoveRef.current?.(snap.x, snap.y);
+        } else {
+          setSnapPointState(null);
+          onCrosshairMoveRef.current?.(dataX, dataY);
+        }
+      } else {
+        onCrosshairMoveRef.current?.(dataX, dataY);
+      }
     },
-    [zoomedXScale, zoomedYScale, config.showCrosshair],
+    [zoomedXScale, zoomedYScale, config.showCrosshair, snapCrosshair, spectra],
   );
 
   const handleMouseLeave = useCallback(() => {
     setCrosshairPos(null);
+    setSnapPointState(null);
   }, []);
 
   // Keyboard navigation
@@ -412,6 +445,16 @@ export function SpectraView(props: SpectraViewProps) {
                   )}
                 </g>
 
+                {/* Annotations */}
+                {annotations.length > 0 && (
+                  <AnnotationLayer
+                    annotations={annotations}
+                    xScale={zoomedXScale}
+                    yScale={zoomedYScale}
+                    colors={colors}
+                  />
+                )}
+
                 {/* Crosshair (rendered above data, pointer-events: none) */}
                 {config.showCrosshair && (
                   <Crosshair
@@ -419,6 +462,7 @@ export function SpectraView(props: SpectraViewProps) {
                     width={plotWidth}
                     height={plotHeight}
                     colors={colors}
+                    snapPoint={snapPointState}
                   />
                 )}
 

@@ -19,6 +19,20 @@ export interface CrosshairPosition {
   dataY: number;
 }
 
+/** Snap point data for rendering a snap dot on the nearest spectrum. */
+export interface SnapPoint {
+  /** Pixel x of the snapped data point. */
+  px: number;
+  /** Pixel y of the snapped data point. */
+  py: number;
+  /** Data-space x value. */
+  dataX: number;
+  /** Data-space y value. */
+  dataY: number;
+  /** Color of the spectrum (for dot fill). */
+  color?: string;
+}
+
 export interface CrosshairProps {
   /** Current crosshair position, or null when not hovering. */
   position: CrosshairPosition | null;
@@ -28,6 +42,8 @@ export interface CrosshairProps {
   height: number;
   /** Theme colors. */
   colors: ThemeColors;
+  /** Optional snap point on nearest spectrum. */
+  snapPoint?: SnapPoint | null;
 }
 
 export function Crosshair({
@@ -35,6 +51,7 @@ export function Crosshair({
   width,
   height,
   colors,
+  snapPoint,
 }: CrosshairProps) {
   if (!position) return null;
 
@@ -60,7 +77,19 @@ export function Crosshair({
         strokeWidth={1}
         strokeDasharray="4 4"
       />
-      {/* Coordinate readout */}
+      {/* Snap dot on nearest spectrum */}
+      {snapPoint && (
+        <circle
+          cx={snapPoint.px}
+          cy={snapPoint.py}
+          r={4}
+          fill={snapPoint.color ?? colors.crosshairColor}
+          stroke={colors.background}
+          strokeWidth={1.5}
+        />
+      )}
+
+      {/* Coordinate readout (shows snapped values when available) */}
       <g
         transform={`translate(${Math.min(position.px + 10, width - 100)}, ${Math.max(position.py - 10, 20)})`}
       >
@@ -82,7 +111,8 @@ export function Crosshair({
           fontSize={10}
           fontFamily="monospace"
         >
-          {formatValue(position.dataX)}, {formatValue(position.dataY)}
+          {formatValue(snapPoint?.dataX ?? position.dataX)},{" "}
+          {formatValue(snapPoint?.dataY ?? position.dataY)}
         </text>
       </g>
     </g>

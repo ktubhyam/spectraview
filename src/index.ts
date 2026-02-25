@@ -24,6 +24,7 @@ export { Crosshair } from "./components/Crosshair/Crosshair";
 export { Toolbar } from "./components/Toolbar/Toolbar";
 export { Legend } from "./components/Legend/Legend";
 export { DropZone } from "./components/DropZone/DropZone";
+export { AnnotationLayer } from "./components/AnnotationLayer/AnnotationLayer";
 
 // Hooks
 export { useZoomPan } from "./hooks/useZoomPan";
@@ -41,6 +42,7 @@ export {
   generateChartDescription,
   KEYBOARD_SHORTCUTS,
 } from "./utils/a11y";
+export { binarySearchClosest, snapToNearestSpectrum } from "./utils/snap";
 
 // Parsers
 export { parseJcamp } from "./parsers/jcamp";
@@ -69,6 +71,7 @@ export type {
   SpectrumType,
   Peak,
   Region,
+  Annotation,
   ViewState,
   Theme,
   DisplayMode,
@@ -92,6 +95,9 @@ export type { UseExportReturn } from "./hooks/useExport";
 export type { CrosshairPosition, CrosshairProps } from "./components/Crosshair/Crosshair";
 export type { LegendProps } from "./components/Legend/Legend";
 export type { DropZoneProps } from "./components/DropZone/DropZone";
+export type { AnnotationLayerProps } from "./components/AnnotationLayer/AnnotationLayer";
+export type { SnapResult } from "./utils/snap";
+export type { SnapPoint } from "./components/Crosshair/Crosshair";
 export type { UseRegionSelectOptions, UseRegionSelectReturn } from "./hooks/useRegionSelect";
 export type { UseKeyboardNavigationOptions } from "./hooks/useKeyboardNavigation";
 export type { ExportMenuProps } from "./components/ExportMenu/ExportMenu";

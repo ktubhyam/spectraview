@@ -27,6 +27,7 @@ export { DropZone } from "./components/DropZone/DropZone";
 export { AnnotationLayer } from "./components/AnnotationLayer/AnnotationLayer";
 export { Minimap } from "./components/Minimap/Minimap";
 export { Tooltip } from "./components/Tooltip/Tooltip";
+export { DataTable } from "./components/DataTable/DataTable";
 
 // Hooks
 export { useZoomPan } from "./hooks/useZoomPan";
@@ -47,6 +48,12 @@ export {
   KEYBOARD_SHORTCUTS,
 } from "./utils/a11y";
 export { binarySearchClosest, snapToNearestSpectrum } from "./utils/snap";
+export {
+  spectrumToCsv,
+  multiSpectraToCsv,
+  spectrumToJson,
+  downloadString,
+} from "./utils/export-data";
 export { lttbDownsample } from "./utils/lttb";
 export {
   baselineRubberBand,
@@ -121,6 +128,8 @@ export type { DropZoneProps } from "./components/DropZone/DropZone";
 export type { AnnotationLayerProps } from "./components/AnnotationLayer/AnnotationLayer";
 export type { MinimapProps } from "./components/Minimap/Minimap";
 export type { TooltipProps, TooltipData } from "./components/Tooltip/Tooltip";
+export type { DataTableProps } from "./components/DataTable/DataTable";
+export type { ExportOptions } from "./utils/export-data";
 export type { SnapResult } from "./utils/snap";
 export type { LTTBPoint } from "./utils/lttb";
 export type { SnapPoint } from "./components/Crosshair/Crosshair";

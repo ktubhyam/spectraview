@@ -14,3 +14,4 @@ export { Toolbar } from "./Toolbar/Toolbar";
 export { Legend } from "./Legend/Legend";
 export { DropZone } from "./DropZone/DropZone";
 export { StackedView } from "./StackedView/StackedView";
+export { ExportMenu } from "./ExportMenu/ExportMenu";

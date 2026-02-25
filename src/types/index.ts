@@ -13,6 +13,9 @@ export type SpectrumType =
   | "fluorescence"
   | "other";
 
+/** Supported line styles for spectrum rendering. */
+export type LineStyle = "solid" | "dashed" | "dotted" | "dash-dot";
+
 /** A single spectrum dataset. */
 export interface Spectrum {
   /** Unique identifier. */
@@ -31,6 +34,10 @@ export interface Spectrum {
   type?: SpectrumType;
   /** Rendering color (CSS color string). */
   color?: string;
+  /** Line style for rendering. */
+  lineStyle?: LineStyle;
+  /** Line width in pixels. */
+  lineWidth?: number;
   /** Whether this spectrum is visible. */
   visible?: boolean;
   /** Arbitrary metadata from file headers. */

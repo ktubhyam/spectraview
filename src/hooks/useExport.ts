@@ -3,11 +3,22 @@
  */
 
 import { useCallback } from "react";
+import type { ScaleLinear } from "d3-scale";
 import type { Spectrum } from "../types";
+import { generateSvg, downloadSvg } from "../utils/svg-export";
 
 export interface UseExportReturn {
   /** Export the canvas as a PNG data URL. */
   exportPng: (canvas: HTMLCanvasElement, filename?: string) => void;
+  /** Export visible spectra as SVG vector. */
+  exportSvg: (
+    spectra: Spectrum[],
+    xScale: ScaleLinear<number, number>,
+    yScale: ScaleLinear<number, number>,
+    width: number,
+    height: number,
+    filename?: string,
+  ) => void;
   /** Export visible spectra as CSV text. */
   exportCsv: (spectra: Spectrum[], filename?: string) => void;
   /** Export visible spectra as JSON. */
@@ -93,5 +104,20 @@ export function useExport(): UseExportReturn {
     [],
   );
 
-  return { exportPng, exportCsv, exportJson };
+  const exportSvg = useCallback(
+    (
+      spectra: Spectrum[],
+      xScale: ScaleLinear<number, number>,
+      yScale: ScaleLinear<number, number>,
+      width: number,
+      height: number,
+      filename = "spectrum.svg",
+    ) => {
+      const svg = generateSvg(spectra, xScale, yScale, { width, height });
+      downloadSvg(svg, filename);
+    },
+    [],
+  );
+
+  return { exportPng, exportSvg, exportCsv, exportJson };
 }

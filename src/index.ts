@@ -33,6 +33,8 @@ export { useExport } from "./hooks/useExport";
 export { useRegionSelect } from "./hooks/useRegionSelect";
 export { useResizeObserver } from "./hooks/useResizeObserver";
 export { StackedView } from "./components/StackedView/StackedView";
+export { ExportMenu } from "./components/ExportMenu/ExportMenu";
+export { generateSvg, downloadSvg, LINE_DASH_PATTERNS } from "./utils/svg-export";
 
 // Parsers
 export { parseJcamp } from "./parsers/jcamp";
@@ -65,6 +67,7 @@ export type {
   Theme,
   DisplayMode,
   Margin,
+  LineStyle,
   LegendPosition,
   SpectraViewProps,
   ResolvedConfig,
@@ -84,3 +87,5 @@ export type { CrosshairPosition, CrosshairProps } from "./components/Crosshair/C
 export type { LegendProps } from "./components/Legend/Legend";
 export type { DropZoneProps } from "./components/DropZone/DropZone";
 export type { UseRegionSelectOptions, UseRegionSelectReturn } from "./hooks/useRegionSelect";
+export type { ExportMenuProps } from "./components/ExportMenu/ExportMenu";
+export type { SvgExportOptions } from "./utils/svg-export";

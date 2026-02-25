@@ -6,14 +6,19 @@
  */
 
 import type { ScaleLinear } from "d3-scale";
-import type { Spectrum } from "../types";
+import type { Spectrum, LineStyle } from "../types";
 import { getSpectrumColor } from "./colors";
 
-/** Line width for spectrum rendering. */
+/** Default line width for spectrum rendering. */
 const LINE_WIDTH = 1.5;
 
-/** Line width when a spectrum is highlighted/hovered. */
-const HIGHLIGHT_LINE_WIDTH = 2.5;
+/** Canvas dash patterns for line styles. */
+const CANVAS_DASH_PATTERNS: Record<LineStyle, number[]> = {
+  solid: [],
+  dashed: [8, 4],
+  dotted: [2, 2],
+  "dash-dot": [8, 4, 2, 4],
+};
 
 /**
  * Threshold: if visible points exceed this count, apply min-max decimation.
@@ -138,7 +143,9 @@ export function drawSpectrum(
   if (n < 2) return;
 
   const color = spectrum.color ?? getSpectrumColor(index);
-  const lineWidth = highlighted ? HIGHLIGHT_LINE_WIDTH : LINE_WIDTH;
+  const baseWidth = spectrum.lineWidth ?? LINE_WIDTH;
+  const lineWidth = highlighted ? baseWidth + 1 : baseWidth;
+  const dashPattern = CANVAS_DASH_PATTERNS[spectrum.lineStyle ?? "solid"] ?? [];
 
   // Get visible x-domain for culling
   const [xMin, xMax] = xScale.domain() as [number, number];
@@ -169,6 +176,7 @@ export function drawSpectrum(
   ctx.lineWidth = lineWidth;
   ctx.globalAlpha = opacity;
   ctx.lineJoin = "round";
+  ctx.setLineDash(dashPattern);
 
   if (visibleCount > DECIMATION_THRESHOLD) {
     // Decimated path: min-max binning

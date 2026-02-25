@@ -44,6 +44,15 @@ export {
 } from "./utils/a11y";
 export { binarySearchClosest, snapToNearestSpectrum } from "./utils/snap";
 export { lttbDownsample } from "./utils/lttb";
+export {
+  baselineRubberBand,
+  normalizeMinMax,
+  normalizeArea,
+  normalizeSNV,
+  smoothSavitzkyGolay,
+  derivative1st,
+  derivative2nd,
+} from "./utils/processing";
 
 // Parsers
 export { parseJcamp } from "./parsers/jcamp";

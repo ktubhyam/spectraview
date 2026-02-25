@@ -23,12 +23,14 @@ export { RegionSelector } from "./components/RegionSelector/RegionSelector";
 export { Crosshair } from "./components/Crosshair/Crosshair";
 export { Toolbar } from "./components/Toolbar/Toolbar";
 export { Legend } from "./components/Legend/Legend";
+export { DropZone } from "./components/DropZone/DropZone";
 
 // Hooks
 export { useZoomPan } from "./hooks/useZoomPan";
 export { usePeakPicking } from "./hooks/usePeakPicking";
 export { useSpectrumData } from "./hooks/useSpectrumData";
 export { useExport } from "./hooks/useExport";
+export { useRegionSelect } from "./hooks/useRegionSelect";
 
 // Parsers
 export { parseJcamp } from "./parsers/jcamp";
@@ -78,3 +80,5 @@ export type { UseSpectrumDataReturn } from "./hooks/useSpectrumData";
 export type { UseExportReturn } from "./hooks/useExport";
 export type { CrosshairPosition, CrosshairProps } from "./components/Crosshair/Crosshair";
 export type { LegendProps } from "./components/Legend/Legend";
+export type { DropZoneProps } from "./components/DropZone/DropZone";
+export type { UseRegionSelectOptions, UseRegionSelectReturn } from "./hooks/useRegionSelect";

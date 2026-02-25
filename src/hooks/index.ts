@@ -15,3 +15,6 @@ export type { UseSpectrumDataReturn } from "./useSpectrumData";
 
 export { useExport } from "./useExport";
 export type { UseExportReturn } from "./useExport";
+
+export { useRegionSelect } from "./useRegionSelect";
+export type { UseRegionSelectOptions, UseRegionSelectReturn } from "./useRegionSelect";

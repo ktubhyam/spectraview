@@ -29,6 +29,8 @@ import { Crosshair } from "../Crosshair/Crosshair";
 import type { CrosshairPosition } from "../Crosshair/Crosshair";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { Legend } from "../Legend/Legend";
+import { DropZone } from "../DropZone/DropZone";
+import { useRegionSelect } from "../../hooks/useRegionSelect";
 
 /** Default chart margins. */
 const DEFAULT_MARGIN: Margin = {
@@ -90,6 +92,8 @@ export function SpectraView(props: SpectraViewProps) {
     onViewChange,
     onCrosshairMove,
     onToggleVisibility,
+    onFileDrop,
+    onRegionSelect,
     canvasRef,
   } = props;
 
@@ -163,6 +167,18 @@ export function SpectraView(props: SpectraViewProps) {
     xScale: baseXScale,
     yScale: baseYScale,
     onViewChange: onViewChange ? stableOnViewChange : undefined,
+  });
+
+  // Region selection (Shift+drag)
+  const {
+    pendingRegion,
+    handleMouseDown: regionMouseDown,
+    handleMouseMove: regionMouseMove,
+    handleMouseUp: regionMouseUp,
+  } = useRegionSelect({
+    enabled: config.enableRegionSelect,
+    xScale: zoomedXScale,
+    onRegionSelect,
   });
 
   // Highlighted spectrum for legend hover
@@ -249,13 +265,13 @@ export function SpectraView(props: SpectraViewProps) {
         />
       )}
 
-      {/* Chart area */}
-      <div
-        style={{
-          position: "relative",
-          width,
-          height: height - toolbarHeight,
-        }}
+      {/* Chart area wrapped in DropZone */}
+      <DropZone
+        enabled={config.enableDragDrop}
+        theme={theme}
+        width={width}
+        height={height - toolbarHeight}
+        onDrop={onFileDrop}
       >
         {/* Canvas layer for spectral data (behind SVG) */}
         <div
@@ -338,6 +354,23 @@ export function SpectraView(props: SpectraViewProps) {
               />
             )}
 
+            {/* Pending region highlight */}
+            {pendingRegion && (
+              <rect
+                x={zoomedXScale(pendingRegion.xStart)}
+                y={0}
+                width={Math.abs(
+                  zoomedXScale(pendingRegion.xEnd) -
+                    zoomedXScale(pendingRegion.xStart),
+                )}
+                height={plotHeight}
+                fill={colors.regionFill}
+                stroke={colors.regionStroke}
+                strokeWidth={1}
+                pointerEvents="none"
+              />
+            )}
+
             {/* Zoom/pan + crosshair interaction rect (single surface for all mouse events) */}
             <rect
               ref={zoomRef}
@@ -347,12 +380,17 @@ export function SpectraView(props: SpectraViewProps) {
               height={plotHeight}
               fill="transparent"
               style={{ cursor: config.showCrosshair ? "crosshair" : "grab" }}
-              onMouseMove={handleMouseMove}
+              onMouseDown={regionMouseDown}
+              onMouseMove={(e) => {
+                handleMouseMove(e);
+                regionMouseMove(e);
+              }}
+              onMouseUp={regionMouseUp}
               onMouseLeave={handleMouseLeave}
             />
           </g>
         </svg>
-      </div>
+      </DropZone>
 
       {/* Legend (bottom position) */}
       {config.showLegend && config.legendPosition === "bottom" && (

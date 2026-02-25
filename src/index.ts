@@ -74,3 +74,4 @@ export type {
 export type { UsePeakPickingOptions } from "./hooks/usePeakPicking";
 export type { UseSpectrumDataReturn } from "./hooks/useSpectrumData";
 export type { UseExportReturn } from "./hooks/useExport";
+export type { CrosshairPosition, CrosshairProps } from "./components/Crosshair/Crosshair";

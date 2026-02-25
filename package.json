@@ -34,13 +34,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./parsers": {
-      "types": "./dist/parsers/index.d.ts",
-      "import": "./dist/parsers/index.js",
-      "require": "./dist/parsers/index.cjs"
-    },
-    "./styles.css": "./dist/index.css"
+    }
   },
   "files": [
     "dist",
@@ -48,19 +42,22 @@
     "LICENSE",
     "CHANGELOG.md"
   ],
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "sideEffects": false,
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "jcampconverter": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "jcampconverter": {
+      "optional": true
+    }
   },
   "dependencies": {
-    "@types/d3-transition": "3.0.9",
     "d3-array": "^3.2.4",
     "d3-scale": "^4.0.2",
     "d3-selection": "^3.0.0",
-    "d3-transition": "3.0.1",
+    "d3-transition": "^3.0.1",
     "d3-zoom": "^3.0.0"
   },
   "devDependencies": {
@@ -71,6 +68,7 @@
     "@types/d3-array": "^3.2.1",
     "@types/d3-scale": "^4.0.8",
     "@types/d3-selection": "^3.0.10",
+    "@types/d3-transition": "^3.0.9",
     "@types/d3-zoom": "^3.0.8",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

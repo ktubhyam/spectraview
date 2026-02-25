@@ -73,7 +73,7 @@ export interface ViewState {
 export type Theme = "light" | "dark";
 
 /** Display mode for multiple spectra. */
-export type DisplayMode = "overlay" | "stacked";
+export type DisplayMode = "overlay";
 
 /** Margin configuration for the chart area. */
 export interface Margin {
@@ -115,8 +115,6 @@ export interface SpectraViewProps {
   theme?: Theme;
   /** Custom CSS class name. */
   className?: string;
-  /** Callback when user selects a region via click-drag. */
-  onRegionSelect?: (region: Region) => void;
   /** Callback when user clicks a peak marker. */
   onPeakClick?: (peak: Peak) => void;
   /** Callback when zoom/pan state changes. */

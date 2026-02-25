@@ -34,7 +34,20 @@ export function SpectrumCanvas({
   highlightedId,
 }: SpectrumCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const dprRef = useRef(1);
 
+  // Set up canvas DPR only when dimensions change (avoids flicker on zoom)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    dprRef.current = dpr;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+  }, [width, height]);
+
+  // Redraw spectra when data or scales change
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -42,11 +55,8 @@ export function SpectrumCanvas({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Handle high-DPI displays
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    ctx.scale(dpr, dpr);
+    const dpr = dprRef.current;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     drawAllSpectra(ctx, spectra, xScale, yScale, width, height, highlightedId);
   }, [spectra, xScale, yScale, width, height, highlightedId]);

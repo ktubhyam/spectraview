@@ -11,7 +11,7 @@
  *   - d3-zoom: zoom/pan math via useZoomPan hook
  */
 
-import { useMemo } from "react";
+import { useCallback, useId, useMemo, useRef, useState } from "react";
 import type {
   SpectraViewProps,
   ResolvedConfig,
@@ -26,6 +26,7 @@ import { AxisLayer } from "../AxisLayer/AxisLayer";
 import { PeakMarkers } from "../PeakMarkers/PeakMarkers";
 import { RegionSelector } from "../RegionSelector/RegionSelector";
 import { Crosshair } from "../Crosshair/Crosshair";
+import type { CrosshairPosition } from "../Crosshair/Crosshair";
 import { Toolbar } from "../Toolbar/Toolbar";
 
 /** Default chart margins. */
@@ -78,6 +79,10 @@ export function SpectraView(props: SpectraViewProps) {
   const { spectra, peaks = [], regions = [], onPeakClick, onViewChange, onCrosshairMove } =
     props;
 
+  // Unique ID for this instance to avoid clipPath collisions (BUG-1 fix)
+  const instanceId = useId();
+  const clipId = `spectraview-clip-${instanceId.replace(/:/g, "")}`;
+
   const config = useMemo(() => resolveConfig(props), [
     props.width,
     props.height,
@@ -113,6 +118,17 @@ export function SpectraView(props: SpectraViewProps) {
     [yExtent, height, margin],
   );
 
+  // Stable onViewChange wrapper via ref to avoid re-attaching zoom
+  const onViewChangeRef = useRef(onViewChange);
+  onViewChangeRef.current = onViewChange;
+  const stableOnViewChange = useMemo(
+    () =>
+      (xDomain: [number, number], yDomain: [number, number]) => {
+        onViewChangeRef.current?.({ xDomain, yDomain });
+      },
+    [],
+  );
+
   // Zoom/pan behavior
   const {
     zoomRef,
@@ -127,10 +143,31 @@ export function SpectraView(props: SpectraViewProps) {
     plotHeight,
     xScale: baseXScale,
     yScale: baseYScale,
-    onViewChange: onViewChange
-      ? (xDomain, yDomain) => onViewChange({ xDomain, yDomain })
-      : undefined,
+    onViewChange: onViewChange ? stableOnViewChange : undefined,
   });
+
+  // Crosshair state — managed here so the zoom rect handles all mouse events (BUG-2 fix)
+  const [crosshairPos, setCrosshairPos] = useState<CrosshairPosition | null>(null);
+  const onCrosshairMoveRef = useRef(onCrosshairMove);
+  onCrosshairMoveRef.current = onCrosshairMove;
+
+  const handleMouseMove = useCallback(
+    (event: React.MouseEvent<SVGRectElement>) => {
+      if (!config.showCrosshair) return;
+      const rect = event.currentTarget.getBoundingClientRect();
+      const px = event.clientX - rect.left;
+      const py = event.clientY - rect.top;
+      const dataX = zoomedXScale.invert(px);
+      const dataY = zoomedYScale.invert(py);
+      setCrosshairPos({ px, py, dataX, dataY });
+      onCrosshairMoveRef.current?.(dataX, dataY);
+    },
+    [zoomedXScale, zoomedYScale, config.showCrosshair],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    setCrosshairPos(null);
+  }, []);
 
   // Empty state
   if (spectra.length === 0) {
@@ -227,12 +264,12 @@ export function SpectraView(props: SpectraViewProps) {
 
             {/* Clip path for plot area content */}
             <defs>
-              <clipPath id="spectraview-clip">
+              <clipPath id={clipId}>
                 <rect x={0} y={0} width={plotWidth} height={plotHeight} />
               </clipPath>
             </defs>
 
-            <g clipPath="url(#spectraview-clip)">
+            <g clipPath={`url(#${clipId})`}>
               {/* Region highlights */}
               {regions.length > 0 && (
                 <RegionSelector
@@ -255,19 +292,17 @@ export function SpectraView(props: SpectraViewProps) {
               )}
             </g>
 
-            {/* Crosshair (must be above other overlays for mouse events) */}
+            {/* Crosshair (rendered above data, pointer-events: none) */}
             {config.showCrosshair && (
               <Crosshair
-                xScale={zoomedXScale}
-                yScale={zoomedYScale}
+                position={crosshairPos}
                 width={plotWidth}
                 height={plotHeight}
                 colors={colors}
-                onMove={onCrosshairMove}
               />
             )}
 
-            {/* Zoom/pan interaction rect (invisible, captures d3-zoom events) */}
+            {/* Zoom/pan + crosshair interaction rect (single surface for all mouse events) */}
             <rect
               ref={zoomRef}
               x={0}
@@ -275,7 +310,9 @@ export function SpectraView(props: SpectraViewProps) {
               width={plotWidth}
               height={plotHeight}
               fill="transparent"
-              style={{ cursor: "grab" }}
+              style={{ cursor: config.showCrosshair ? "crosshair" : "grab" }}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
             />
           </g>
         </svg>

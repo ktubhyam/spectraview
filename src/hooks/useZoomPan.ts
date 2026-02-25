@@ -5,7 +5,7 @@
  * reset. Works with both the SVG overlay and Canvas data layers.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { zoom, type ZoomBehavior, zoomIdentity, type ZoomTransform } from "d3-zoom";
 import { select } from "d3-selection";
 import "d3-transition";
@@ -69,18 +69,31 @@ export function useZoomPan(options: UseZoomPanOptions): UseZoomPanReturn {
   const zoomRef = useRef<SVGRectElement | null>(null);
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGRectElement, unknown> | null>(null);
 
+  // Store callbacks and config in refs to avoid effect re-runs (REACT-2 fix)
+  const onViewChangeRef = useRef(onViewChange);
+  onViewChangeRef.current = onViewChange;
+  const scaleExtentRef = useRef(scaleExtent);
+  scaleExtentRef.current = scaleExtent;
+
   const [transform, setTransform] = useState<ZoomTransform>(zoomIdentity);
 
-  // Create rescaled axes from the current transform
-  const zoomedXScale = transform.rescaleX(xScale.copy());
-  const zoomedYScale = transform.rescaleY(yScale.copy());
+  // Memoize rescaled axes from the current transform (BUG-4 fix)
+  const zoomedXScale = useMemo(
+    () => transform.rescaleX(xScale.copy()),
+    [transform, xScale],
+  );
+  const zoomedYScale = useMemo(
+    () => transform.rescaleY(yScale.copy()),
+    [transform, yScale],
+  );
 
   // Set up d3-zoom behavior
   useEffect(() => {
-    if (!zoomRef.current || !enabled) return;
+    const element = zoomRef.current;
+    if (!element || !enabled) return;
 
     const zoomBehavior = zoom<SVGRectElement, unknown>()
-      .scaleExtent(scaleExtent)
+      .scaleExtent(scaleExtentRef.current)
       .extent([
         [0, 0],
         [plotWidth, plotHeight],
@@ -93,10 +106,10 @@ export function useZoomPan(options: UseZoomPanOptions): UseZoomPanReturn {
         const newTransform = event.transform as ZoomTransform;
         setTransform(newTransform);
 
-        if (onViewChange) {
+        if (onViewChangeRef.current) {
           const newXScale = newTransform.rescaleX(xScale.copy());
           const newYScale = newTransform.rescaleY(yScale.copy());
-          onViewChange(
+          onViewChangeRef.current(
             newXScale.domain() as [number, number],
             newYScale.domain() as [number, number],
           );
@@ -105,17 +118,18 @@ export function useZoomPan(options: UseZoomPanOptions): UseZoomPanReturn {
 
     zoomBehaviorRef.current = zoomBehavior;
 
-    select(zoomRef.current).call(zoomBehavior);
+    select(element).call(zoomBehavior);
 
     // Double-click to reset
-    select(zoomRef.current).on("dblclick.zoom", () => {
-      select(zoomRef.current!).transition().duration(300).call(zoomBehavior.transform, zoomIdentity);
+    select(element).on("dblclick.zoom", () => {
+      select(element).transition().duration(300).call(zoomBehavior.transform, zoomIdentity);
     });
 
+    // Stale ref fix: use captured `element` instead of zoomRef.current
     return () => {
-      select(zoomRef.current!).on(".zoom", null);
+      select(element).on(".zoom", null);
     };
-  }, [plotWidth, plotHeight, enabled, scaleExtent, xScale, yScale, onViewChange]);
+  }, [plotWidth, plotHeight, enabled, xScale, yScale]);
 
   const resetZoom = useCallback(() => {
     if (!zoomRef.current || !zoomBehaviorRef.current) return;

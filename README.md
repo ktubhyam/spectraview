@@ -7,6 +7,7 @@ Interactive React component for vibrational spectroscopy (IR, Raman, NIR).
 [![bundle size](https://img.shields.io/bundlephobia/minzip/spectraview)](https://bundlephobia.com/package/spectraview)
 [![license](https://img.shields.io/npm/l/spectraview)](https://github.com/ktubhyam/spectraview/blob/main/LICENSE)
 [![CI](https://img.shields.io/github/actions/workflow/status/ktubhyam/spectraview/ci.yml?branch=main)](https://github.com/ktubhyam/spectraview/actions)
+[![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/ktubhyam/spectraview/coverage-badges/coverage.json)](https://github.com/ktubhyam/spectraview/actions/workflows/ci.yml)
 [![Storybook](https://img.shields.io/badge/storybook-deployed-ff4785)](https://ktubhyam.github.io/spectraview/)
 
 ## Features
@@ -297,7 +298,7 @@ SpectraView pairs with [SpectraKit](https://github.com/ktubhyam/spectrakit), a P
 - **SpectraView** — View spectra: interactive visualization in the browser
 
 ```
-pip install spectrakit    # Process in Python
+pip install pyspectrakit  # Process in Python
 npm install spectraview   # View in the browser
 ```
 

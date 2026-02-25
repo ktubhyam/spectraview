@@ -63,8 +63,6 @@ export const Tooltip = memo(function Tooltip({
   colors,
   numberFormat = "auto",
 }: TooltipProps) {
-  if (!data) return null;
-
   // Find Y values for each visible spectrum at cursor X
   const entries = useMemo(() => {
     if (!data) return [];
@@ -88,7 +86,7 @@ export const Tooltip = memo(function Tooltip({
       value: number;
       x: number;
     }>;
-  }, [data?.dataX, spectra]);
+  }, [data, spectra]);
 
   // Find nearest peak
   const nearestPeak = useMemo(() => {
@@ -103,7 +101,9 @@ export const Tooltip = memo(function Tooltip({
       }
     }
     return best;
-  }, [data?.dataX, peaks]);
+  }, [data, peaks]);
+
+  if (!data) return null;
 
   const lineHeight = 16;
   const headerHeight = 18;

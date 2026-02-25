@@ -9,6 +9,8 @@ export default defineConfig({
     include: ["src/**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",
+      reporter: ["text", "json-summary", "json", "lcov"],
+      reportOnFailure: true,
       include: ["src/components/**", "src/hooks/**", "src/utils/**", "src/parsers/**"],
       exclude: ["**/*.test.tsx", "**/*.test.ts", "**/*.stories.tsx", "src/test/**"],
     },

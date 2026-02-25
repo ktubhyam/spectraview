@@ -11,7 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   check:
@@ -28,6 +29,83 @@ jobs:
           cache: "npm"
 
       - run: npm ci
+      - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:run
       - run: npm run build
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+
+      - name: Coverage summary
+        if: always()
+        run: |
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "## Test Coverage" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            node -e "
+              const c = require('./coverage/coverage-summary.json').total;
+              const fmt = (v) => v.pct.toFixed(1) + '%';
+              console.log('| Category | Coverage |');
+              console.log('|----------|----------|');
+              console.log('| Statements | ' + fmt(c.statements) + ' |');
+              console.log('| Branches | ' + fmt(c.branches) + ' |');
+              console.log('| Functions | ' + fmt(c.functions) + ' |');
+              console.log('| Lines | ' + fmt(c.lines) + ' |');
+            " >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Report coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          json-summary-path: coverage/coverage-summary.json
+          json-final-path: coverage/coverage-final.json
+
+      - name: Generate and deploy coverage badge
+        if: github.ref == 'refs/heads/main' && always()
+        run: |
+          if [ -f coverage/coverage-summary.json ]; then
+            COVERAGE=$(node -e "
+              const c = require('./coverage/coverage-summary.json').total.lines.pct;
+              console.log(c.toFixed(1));
+            ")
+            if [ "$(echo "$COVERAGE >= 80" | bc -l)" -eq 1 ]; then
+              COLOR="brightgreen"
+            elif [ "$(echo "$COVERAGE >= 60" | bc -l)" -eq 1 ]; then
+              COLOR="yellow"
+            else
+              COLOR="red"
+            fi
+            mkdir -p badges
+            echo "{\"schemaVersion\":1,\"label\":\"coverage\",\"message\":\"${COVERAGE}%\",\"color\":\"${COLOR}\"}" > badges/coverage.json
+          fi
+
+      - name: Deploy coverage badge
+        if: github.ref == 'refs/heads/main' && hashFiles('badges/coverage.json') != ''
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./badges
+          publish_branch: coverage-badges
+          keep_files: false

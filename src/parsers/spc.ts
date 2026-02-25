@@ -163,7 +163,6 @@ export function parseSpc(buffer: ArrayBuffer): Spectrum[] {
 
   for (let s = 0; s < count; s++) {
     let xVals: Float64Array;
-    let yVals: Float64Array;
     let subNpoints = npoints;
 
     if (isMulti) {
@@ -199,7 +198,7 @@ export function parseSpc(buffer: ArrayBuffer): Spectrum[] {
     }
 
     // Read Y values
-    yVals = new Float64Array(subNpoints);
+    const yVals = new Float64Array(subNpoints);
 
     if (is16Bit) {
       for (let i = 0; i < subNpoints; i++) {

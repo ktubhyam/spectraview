@@ -26,6 +26,7 @@ export { Legend } from "./components/Legend/Legend";
 export { DropZone } from "./components/DropZone/DropZone";
 export { AnnotationLayer } from "./components/AnnotationLayer/AnnotationLayer";
 export { Minimap } from "./components/Minimap/Minimap";
+export { Tooltip } from "./components/Tooltip/Tooltip";
 
 // Hooks
 export { useZoomPan } from "./hooks/useZoomPan";
@@ -117,6 +118,7 @@ export type { LegendProps } from "./components/Legend/Legend";
 export type { DropZoneProps } from "./components/DropZone/DropZone";
 export type { AnnotationLayerProps } from "./components/AnnotationLayer/AnnotationLayer";
 export type { MinimapProps } from "./components/Minimap/Minimap";
+export type { TooltipProps, TooltipData } from "./components/Tooltip/Tooltip";
 export type { SnapResult } from "./utils/snap";
 export type { LTTBPoint } from "./utils/lttb";
 export type { SnapPoint } from "./components/Crosshair/Crosshair";

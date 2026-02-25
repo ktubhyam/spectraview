@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: "SpectraView: Interactive React component for vibrational spectroscopy"
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+authors:
+  - given-names: Tubhyam
+    family-names: Karthikeyan
+    email: takarthikeyan25@gmail.com
+    affiliation: "Indian Institute of Technology Bombay (ICT Mumbai)"
+version: "0.0.0"
+date-released: "2026-02-25"
+repository-code: "https://github.com/ktubhyam/spectraview"
+url: "https://spectraview.dev"
+license: MIT
+keywords:
+  - spectroscopy
+  - infrared
+  - Raman
+  - visualization
+  - React
+  - TypeScript
+  - JCAMP-DX
+  - interactive

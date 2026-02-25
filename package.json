@@ -1,0 +1,101 @@
+{
+  "name": "spectraview",
+  "version": "0.0.0",
+  "description": "Interactive React component for vibrational spectroscopy (IR, Raman, NIR)",
+  "author": "Tubhyam Karthikeyan <takarthikeyan25@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ktubhyam/spectraview"
+  },
+  "homepage": "https://spectraview.dev",
+  "bugs": {
+    "url": "https://github.com/ktubhyam/spectraview/issues"
+  },
+  "keywords": [
+    "react",
+    "spectroscopy",
+    "infrared",
+    "raman",
+    "NIR",
+    "spectrum",
+    "viewer",
+    "visualization",
+    "JCAMP-DX",
+    "chemistry",
+    "scientific"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./parsers": {
+      "types": "./dist/parsers/index.d.ts",
+      "import": "./dist/parsers/index.js",
+      "require": "./dist/parsers/index.cjs"
+    },
+    "./styles.css": "./dist/index.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@types/d3-transition": "3.0.9",
+    "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2",
+    "d3-selection": "^3.0.0",
+    "d3-transition": "3.0.1",
+    "d3-zoom": "^3.0.0"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0",
+    "@testing-library/jest-dom": "^6.6.0",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.0",
+    "@types/d3-array": "^3.2.1",
+    "@types/d3-scale": "^4.0.8",
+    "@types/d3-selection": "^3.0.10",
+    "@types/d3-zoom": "^3.0.8",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitest/coverage-v8": "^2.1.0",
+    "jsdom": "^25.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run test:run && npm run build",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "ci:publish": "npm run build && changeset publish"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

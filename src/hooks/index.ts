@@ -18,3 +18,5 @@ export type { UseExportReturn } from "./useExport";
 
 export { useRegionSelect } from "./useRegionSelect";
 export type { UseRegionSelectOptions, UseRegionSelectReturn } from "./useRegionSelect";
+
+export { useResizeObserver } from "./useResizeObserver";

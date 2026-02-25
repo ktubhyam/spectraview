@@ -13,3 +13,4 @@ export { Crosshair } from "./Crosshair/Crosshair";
 export { Toolbar } from "./Toolbar/Toolbar";
 export { Legend } from "./Legend/Legend";
 export { DropZone } from "./DropZone/DropZone";
+export { StackedView } from "./StackedView/StackedView";

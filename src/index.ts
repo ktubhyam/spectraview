@@ -31,6 +31,8 @@ export { usePeakPicking } from "./hooks/usePeakPicking";
 export { useSpectrumData } from "./hooks/useSpectrumData";
 export { useExport } from "./hooks/useExport";
 export { useRegionSelect } from "./hooks/useRegionSelect";
+export { useResizeObserver } from "./hooks/useResizeObserver";
+export { StackedView } from "./components/StackedView/StackedView";
 
 // Parsers
 export { parseJcamp } from "./parsers/jcamp";

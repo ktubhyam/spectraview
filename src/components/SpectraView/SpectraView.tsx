@@ -30,7 +30,9 @@ import type { CrosshairPosition } from "../Crosshair/Crosshair";
 import { Toolbar } from "../Toolbar/Toolbar";
 import { Legend } from "../Legend/Legend";
 import { DropZone } from "../DropZone/DropZone";
+import { StackedView } from "../StackedView/StackedView";
 import { useRegionSelect } from "../../hooks/useRegionSelect";
+import { useResizeObserver } from "../../hooks/useResizeObserver";
 
 /** Default chart margins. */
 const DEFAULT_MARGIN: Margin = {
@@ -97,6 +99,9 @@ export function SpectraView(props: SpectraViewProps) {
     canvasRef,
   } = props;
 
+  // Responsive sizing
+  const { ref: resizeRef, size: measuredSize } = useResizeObserver();
+
   // Unique ID for this instance to avoid clipPath collisions (BUG-1 fix)
   const instanceId = useId();
   const clipId = `spectraview-clip-${instanceId.replace(/:/g, "")}`;
@@ -118,7 +123,10 @@ export function SpectraView(props: SpectraViewProps) {
     props.enableRegionSelect,
   ]);
 
-  const { width, height, margin, reverseX, theme } = config;
+  // Use measured width when responsive, fall back to configured width
+  const width =
+    config.responsive && measuredSize ? measuredSize.width : config.width;
+  const { height, margin, reverseX, theme } = config;
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   const colors = useMemo(() => getThemeColors(theme), [theme]);
@@ -207,12 +215,15 @@ export function SpectraView(props: SpectraViewProps) {
     setCrosshairPos(null);
   }, []);
 
+  const isStacked = config.displayMode === "stacked";
+
   // Empty state
   if (spectra.length === 0) {
     return (
       <div
+        ref={config.responsive ? resizeRef : undefined}
         style={{
-          width,
+          width: config.responsive ? "100%" : width,
           height,
           display: "flex",
           alignItems: "center",
@@ -234,8 +245,9 @@ export function SpectraView(props: SpectraViewProps) {
 
   return (
     <div
+      ref={config.responsive ? resizeRef : undefined}
       style={{
-        width,
+        width: config.responsive ? "100%" : width,
         background: colors.background,
         borderRadius: 4,
         overflow: "hidden",
@@ -273,123 +285,162 @@ export function SpectraView(props: SpectraViewProps) {
         height={height - toolbarHeight}
         onDrop={onFileDrop}
       >
-        {/* Canvas layer for spectral data (behind SVG) */}
-        <div
-          style={{
-            position: "absolute",
-            top: margin.top,
-            left: margin.left,
-            width: plotWidth,
-            height: plotHeight,
-            overflow: "hidden",
-          }}
-        >
-          <SpectrumCanvas
-            ref={canvasRef}
-            spectra={spectra}
-            xScale={zoomedXScale}
-            yScale={zoomedYScale}
-            width={plotWidth}
-            height={plotHeight}
-            highlightedId={highlightedId ?? undefined}
-          />
-        </div>
+        {isStacked ? (
+          /* Stacked mode: each spectrum in its own panel */
+          <svg
+            width={width}
+            height={height - toolbarHeight}
+            style={{ position: "absolute", top: 0, left: 0 }}
+          >
+            <g transform={`translate(${margin.left}, ${margin.top})`}>
+              <StackedView
+                spectra={spectra}
+                xScale={zoomedXScale}
+                plotWidth={plotWidth}
+                plotHeight={plotHeight}
+                margin={margin}
+                theme={theme}
+                showGrid={config.showGrid}
+                xLabel={labels.xLabel}
+                yLabel={labels.yLabel}
+              />
 
-        {/* SVG overlay for axes, annotations, crosshair */}
-        <svg
-          width={width}
-          height={height - toolbarHeight}
-          style={{ position: "absolute", top: 0, left: 0 }}
-        >
-          <g transform={`translate(${margin.left}, ${margin.top})`}>
-            {/* Axes and grid */}
-            <AxisLayer
-              xScale={zoomedXScale}
-              yScale={zoomedYScale}
-              width={plotWidth}
-              height={plotHeight}
-              xLabel={labels.xLabel}
-              yLabel={labels.yLabel}
-              showGrid={config.showGrid}
-              colors={colors}
-            />
-
-            {/* Clip path for plot area content */}
-            <defs>
-              <clipPath id={clipId}>
-                <rect x={0} y={0} width={plotWidth} height={plotHeight} />
-              </clipPath>
-            </defs>
-
-            <g clipPath={`url(#${clipId})`}>
-              {/* Region highlights */}
-              {regions.length > 0 && (
-                <RegionSelector
-                  regions={regions}
-                  xScale={zoomedXScale}
-                  height={plotHeight}
-                  colors={colors}
-                />
-              )}
-
-              {/* Peak markers */}
-              {peaks.length > 0 && (
-                <PeakMarkers
-                  peaks={peaks}
-                  xScale={zoomedXScale}
-                  yScale={zoomedYScale}
-                  colors={colors}
-                  onPeakClick={onPeakClick}
-                />
-              )}
-            </g>
-
-            {/* Crosshair (rendered above data, pointer-events: none) */}
-            {config.showCrosshair && (
-              <Crosshair
-                position={crosshairPos}
+              {/* Zoom/pan interaction rect */}
+              <rect
+                ref={zoomRef}
+                x={0}
+                y={0}
                 width={plotWidth}
                 height={plotHeight}
-                colors={colors}
+                fill="transparent"
+                style={{ cursor: "grab" }}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
               />
-            )}
-
-            {/* Pending region highlight */}
-            {pendingRegion && (
-              <rect
-                x={zoomedXScale(pendingRegion.xStart)}
-                y={0}
-                width={Math.abs(
-                  zoomedXScale(pendingRegion.xEnd) -
-                    zoomedXScale(pendingRegion.xStart),
-                )}
-                height={plotHeight}
-                fill={colors.regionFill}
-                stroke={colors.regionStroke}
-                strokeWidth={1}
-                pointerEvents="none"
-              />
-            )}
-
-            {/* Zoom/pan + crosshair interaction rect (single surface for all mouse events) */}
-            <rect
-              ref={zoomRef}
-              x={0}
-              y={0}
-              width={plotWidth}
-              height={plotHeight}
-              fill="transparent"
-              style={{ cursor: config.showCrosshair ? "crosshair" : "grab" }}
-              onMouseDown={regionMouseDown}
-              onMouseMove={(e) => {
-                handleMouseMove(e);
-                regionMouseMove(e);
+            </g>
+          </svg>
+        ) : (
+          /* Overlay mode: all spectra on single canvas */
+          <>
+            {/* Canvas layer for spectral data (behind SVG) */}
+            <div
+              style={{
+                position: "absolute",
+                top: margin.top,
+                left: margin.left,
+                width: plotWidth,
+                height: plotHeight,
+                overflow: "hidden",
               }}
-              onMouseUp={regionMouseUp}
-              onMouseLeave={handleMouseLeave}
-            />
-          </g>
-        </svg>
+            >
+              <SpectrumCanvas
+                ref={canvasRef}
+                spectra={spectra}
+                xScale={zoomedXScale}
+                yScale={zoomedYScale}
+                width={plotWidth}
+                height={plotHeight}
+                highlightedId={highlightedId ?? undefined}
+              />
+            </div>
+
+            {/* SVG overlay for axes, annotations, crosshair */}
+            <svg
+              width={width}
+              height={height - toolbarHeight}
+              style={{ position: "absolute", top: 0, left: 0 }}
+            >
+              <g transform={`translate(${margin.left}, ${margin.top})`}>
+                {/* Axes and grid */}
+                <AxisLayer
+                  xScale={zoomedXScale}
+                  yScale={zoomedYScale}
+                  width={plotWidth}
+                  height={plotHeight}
+                  xLabel={labels.xLabel}
+                  yLabel={labels.yLabel}
+                  showGrid={config.showGrid}
+                  colors={colors}
+                />
+
+                {/* Clip path for plot area content */}
+                <defs>
+                  <clipPath id={clipId}>
+                    <rect x={0} y={0} width={plotWidth} height={plotHeight} />
+                  </clipPath>
+                </defs>
+
+                <g clipPath={`url(#${clipId})`}>
+                  {/* Region highlights */}
+                  {regions.length > 0 && (
+                    <RegionSelector
+                      regions={regions}
+                      xScale={zoomedXScale}
+                      height={plotHeight}
+                      colors={colors}
+                    />
+                  )}
+
+                  {/* Peak markers */}
+                  {peaks.length > 0 && (
+                    <PeakMarkers
+                      peaks={peaks}
+                      xScale={zoomedXScale}
+                      yScale={zoomedYScale}
+                      colors={colors}
+                      onPeakClick={onPeakClick}
+                    />
+                  )}
+                </g>
+
+                {/* Crosshair (rendered above data, pointer-events: none) */}
+                {config.showCrosshair && (
+                  <Crosshair
+                    position={crosshairPos}
+                    width={plotWidth}
+                    height={plotHeight}
+                    colors={colors}
+                  />
+                )}
+
+                {/* Pending region highlight */}
+                {pendingRegion && (
+                  <rect
+                    x={zoomedXScale(pendingRegion.xStart)}
+                    y={0}
+                    width={Math.abs(
+                      zoomedXScale(pendingRegion.xEnd) -
+                        zoomedXScale(pendingRegion.xStart),
+                    )}
+                    height={plotHeight}
+                    fill={colors.regionFill}
+                    stroke={colors.regionStroke}
+                    strokeWidth={1}
+                    pointerEvents="none"
+                  />
+                )}
+
+                {/* Zoom/pan + crosshair interaction rect */}
+                <rect
+                  ref={zoomRef}
+                  x={0}
+                  y={0}
+                  width={plotWidth}
+                  height={plotHeight}
+                  fill="transparent"
+                  style={{ cursor: config.showCrosshair ? "crosshair" : "grab" }}
+                  onMouseDown={regionMouseDown}
+                  onMouseMove={(e) => {
+                    handleMouseMove(e);
+                    regionMouseMove(e);
+                  }}
+                  onMouseUp={regionMouseUp}
+                  onMouseLeave={handleMouseLeave}
+                />
+              </g>
+            </svg>
+          </>
+        )}
       </DropZone>
 
       {/* Legend (bottom position) */}

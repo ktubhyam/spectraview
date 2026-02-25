@@ -6,7 +6,7 @@ Interactive React component for vibrational spectroscopy (IR, Raman, NIR).
 [![npm downloads](https://img.shields.io/npm/dm/spectraview)](https://www.npmjs.com/package/spectraview)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/spectraview)](https://bundlephobia.com/package/spectraview)
 [![license](https://img.shields.io/npm/l/spectraview)](https://github.com/ktubhyam/spectraview/blob/main/LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/ktubhyam/spectraview/ci.yml)](https://github.com/ktubhyam/spectraview/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/ktubhyam/spectraview/ci.yml?branch=main)](https://github.com/ktubhyam/spectraview/actions)
 
 ## Features
 

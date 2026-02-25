@@ -54,6 +54,14 @@ export {
   derivative1st,
   derivative2nd,
 } from "./utils/processing";
+export {
+  differenceSpectrum,
+  addSpectra,
+  scaleSpectrum,
+  correlationCoefficient,
+  residualSpectrum,
+  interpolateToGrid,
+} from "./utils/comparison";
 
 // Parsers
 export { parseJcamp } from "./parsers/jcamp";

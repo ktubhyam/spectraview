@@ -37,6 +37,7 @@ export { useRegionSelect } from "./hooks/useRegionSelect";
 export { useResizeObserver } from "./hooks/useResizeObserver";
 export { useKeyboardNavigation } from "./hooks/useKeyboardNavigation";
 export { useNormalization } from "./hooks/useNormalization";
+export { useHistory } from "./hooks/useHistory";
 export { StackedView } from "./components/StackedView/StackedView";
 export { ExportMenu } from "./components/ExportMenu/ExportMenu";
 export { generateSvg, downloadSvg, LINE_DASH_PATTERNS } from "./utils/svg-export";
@@ -130,5 +131,9 @@ export type {
   UseNormalizationOptions,
   UseNormalizationReturn,
 } from "./hooks/useNormalization";
+export type {
+  UseHistoryOptions,
+  UseHistoryReturn,
+} from "./hooks/useHistory";
 export type { ExportMenuProps } from "./components/ExportMenu/ExportMenu";
 export type { SvgExportOptions } from "./utils/svg-export";

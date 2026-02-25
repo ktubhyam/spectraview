@@ -11,3 +11,4 @@ export { PeakMarkers } from "./PeakMarkers/PeakMarkers";
 export { RegionSelector } from "./RegionSelector/RegionSelector";
 export { Crosshair } from "./Crosshair/Crosshair";
 export { Toolbar } from "./Toolbar/Toolbar";
+export { Legend } from "./Legend/Legend";

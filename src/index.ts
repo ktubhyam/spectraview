@@ -22,6 +22,7 @@ export { PeakMarkers } from "./components/PeakMarkers/PeakMarkers";
 export { RegionSelector } from "./components/RegionSelector/RegionSelector";
 export { Crosshair } from "./components/Crosshair/Crosshair";
 export { Toolbar } from "./components/Toolbar/Toolbar";
+export { Legend } from "./components/Legend/Legend";
 
 // Hooks
 export { useZoomPan } from "./hooks/useZoomPan";
@@ -60,6 +61,7 @@ export type {
   Theme,
   DisplayMode,
   Margin,
+  LegendPosition,
   SpectraViewProps,
   ResolvedConfig,
 } from "./types";
@@ -75,3 +77,4 @@ export type { UsePeakPickingOptions } from "./hooks/usePeakPicking";
 export type { UseSpectrumDataReturn } from "./hooks/useSpectrumData";
 export type { UseExportReturn } from "./hooks/useExport";
 export type { CrosshairPosition, CrosshairProps } from "./components/Crosshair/Crosshair";
+export type { LegendProps } from "./components/Legend/Legend";

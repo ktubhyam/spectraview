@@ -28,6 +28,7 @@ import { RegionSelector } from "../RegionSelector/RegionSelector";
 import { Crosshair } from "../Crosshair/Crosshair";
 import type { CrosshairPosition } from "../Crosshair/Crosshair";
 import { Toolbar } from "../Toolbar/Toolbar";
+import { Legend } from "../Legend/Legend";
 
 /** Default chart margins. */
 const DEFAULT_MARGIN: Margin = {
@@ -54,9 +55,14 @@ function resolveConfig(props: SpectraViewProps): ResolvedConfig {
     showGrid: props.showGrid ?? true,
     showCrosshair: props.showCrosshair ?? true,
     showToolbar: props.showToolbar ?? true,
+    showLegend: props.showLegend ?? true,
+    legendPosition: props.legendPosition ?? "bottom",
     displayMode: props.displayMode ?? "overlay",
     margin: { ...DEFAULT_MARGIN, ...props.margin },
     theme: props.theme ?? "light",
+    responsive: props.responsive ?? false,
+    enableDragDrop: props.enableDragDrop ?? false,
+    enableRegionSelect: props.enableRegionSelect ?? false,
   };
 }
 
@@ -76,8 +82,16 @@ function inferLabels(
 }
 
 export function SpectraView(props: SpectraViewProps) {
-  const { spectra, peaks = [], regions = [], onPeakClick, onViewChange, onCrosshairMove, canvasRef } =
-    props;
+  const {
+    spectra,
+    peaks = [],
+    regions = [],
+    onPeakClick,
+    onViewChange,
+    onCrosshairMove,
+    onToggleVisibility,
+    canvasRef,
+  } = props;
 
   // Unique ID for this instance to avoid clipPath collisions (BUG-1 fix)
   const instanceId = useId();
@@ -90,9 +104,14 @@ export function SpectraView(props: SpectraViewProps) {
     props.showGrid,
     props.showCrosshair,
     props.showToolbar,
+    props.showLegend,
+    props.legendPosition,
     props.displayMode,
     props.margin,
     props.theme,
+    props.responsive,
+    props.enableDragDrop,
+    props.enableRegionSelect,
   ]);
 
   const { width, height, margin, reverseX, theme } = config;
@@ -145,6 +164,9 @@ export function SpectraView(props: SpectraViewProps) {
     yScale: baseYScale,
     onViewChange: onViewChange ? stableOnViewChange : undefined,
   });
+
+  // Highlighted spectrum for legend hover
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
   // Crosshair state — managed here so the zoom rect handles all mouse events (BUG-2 fix)
   const [crosshairPos, setCrosshairPos] = useState<CrosshairPosition | null>(null);
@@ -215,6 +237,18 @@ export function SpectraView(props: SpectraViewProps) {
         />
       )}
 
+      {/* Legend (top position) */}
+      {config.showLegend && config.legendPosition === "top" && (
+        <Legend
+          spectra={spectra}
+          theme={theme}
+          position="top"
+          onToggleVisibility={onToggleVisibility}
+          onHighlight={setHighlightedId}
+          highlightedId={highlightedId}
+        />
+      )}
+
       {/* Chart area */}
       <div
         style={{
@@ -241,6 +275,7 @@ export function SpectraView(props: SpectraViewProps) {
             yScale={zoomedYScale}
             width={plotWidth}
             height={plotHeight}
+            highlightedId={highlightedId ?? undefined}
           />
         </div>
 
@@ -318,6 +353,18 @@ export function SpectraView(props: SpectraViewProps) {
           </g>
         </svg>
       </div>
+
+      {/* Legend (bottom position) */}
+      {config.showLegend && config.legendPosition === "bottom" && (
+        <Legend
+          spectra={spectra}
+          theme={theme}
+          position="bottom"
+          onToggleVisibility={onToggleVisibility}
+          onHighlight={setHighlightedId}
+          highlightedId={highlightedId}
+        />
+      )}
     </div>
   );
 }

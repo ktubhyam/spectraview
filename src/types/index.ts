@@ -73,7 +73,10 @@ export interface ViewState {
 export type Theme = "light" | "dark";
 
 /** Display mode for multiple spectra. */
-export type DisplayMode = "overlay";
+export type DisplayMode = "overlay" | "stacked";
+
+/** Legend position relative to the chart. */
+export type LegendPosition = "top" | "bottom" | "left" | "right";
 
 /** Margin configuration for the chart area. */
 export interface Margin {
@@ -113,6 +116,22 @@ export interface SpectraViewProps {
   margin?: Partial<Margin>;
   /** Theme. */
   theme?: Theme;
+  /** Show legend (auto-shown when >1 spectrum). */
+  showLegend?: boolean;
+  /** Legend position. */
+  legendPosition?: LegendPosition;
+  /** Callback when a spectrum's visibility is toggled via legend. */
+  onToggleVisibility?: (id: string) => void;
+  /** Enable drag-and-drop file loading. */
+  enableDragDrop?: boolean;
+  /** Callback when files are dropped. */
+  onFileDrop?: (files: File[]) => void;
+  /** Enable interactive region selection (Shift+drag). */
+  enableRegionSelect?: boolean;
+  /** Callback when a region is created. */
+  onRegionSelect?: (region: Region) => void;
+  /** Responsive sizing (fills container width). */
+  responsive?: boolean;
   /** Custom CSS class name. */
   className?: string;
   /** Ref to access the underlying Canvas element (for export). */
@@ -133,7 +152,12 @@ export interface ResolvedConfig {
   showGrid: boolean;
   showCrosshair: boolean;
   showToolbar: boolean;
+  showLegend: boolean;
+  legendPosition: LegendPosition;
   displayMode: DisplayMode;
   margin: Margin;
   theme: Theme;
+  responsive: boolean;
+  enableDragDrop: boolean;
+  enableRegionSelect: boolean;
 }

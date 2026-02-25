@@ -7,7 +7,7 @@ authors:
     family-names: Karthikeyan
     email: takarthikeyan25@gmail.com
     affiliation: "Indian Institute of Technology Bombay (ICT Mumbai)"
-version: "0.0.0"
+version: "1.8.0"
 date-released: "2026-02-25"
 repository-code: "https://github.com/ktubhyam/spectraview"
 url: "https://spectraview.dev"
@@ -16,8 +16,14 @@ keywords:
   - spectroscopy
   - infrared
   - Raman
+  - NIR
   - visualization
   - React
   - TypeScript
   - JCAMP-DX
+  - SPC
   - interactive
+  - peak-detection
+  - normalization
+  - baseline-correction
+  - savitzky-golay

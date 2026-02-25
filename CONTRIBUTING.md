@@ -7,16 +7,27 @@ Thank you for considering contributing to SpectraView! This document outlines ho
 1. Fork and clone the repository
 2. Install dependencies:
    ```bash
-   pnpm install
+   npm install
    ```
 3. Run tests:
    ```bash
-   pnpm test
+   npm test
    ```
 4. Start development (watch mode):
    ```bash
-   pnpm dev
+   npm run dev
    ```
+
+## Storybook
+
+SpectraView uses [Storybook](https://storybook.js.org/) for interactive component development and documentation.
+
+```bash
+npm run storybook        # Start dev server on http://localhost:6006
+npm run build-storybook  # Build static Storybook site
+```
+
+When adding or modifying a component, add or update the corresponding story in `src/stories/`. Each component should have stories covering its main states (default, dark theme, edge cases).
 
 ## Making Changes
 
@@ -25,13 +36,13 @@ Thank you for considering contributing to SpectraView! This document outlines ho
 3. Add tests for new functionality
 4. Run the full check suite:
    ```bash
-   pnpm typecheck
-   pnpm test:run
-   pnpm build
+   npm run typecheck
+   npm run test:run
+   npm run build
    ```
 5. Create a changeset describing your changes:
    ```bash
-   pnpm changeset
+   npx changeset
    ```
 6. Submit a pull request
 
@@ -52,6 +63,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - Functional components with hooks
 - All public APIs must have JSDoc comments
 - Tests use Vitest + React Testing Library
+- All new components should have both tests (`__tests__/`) and stories (`src/stories/`)
 
 ## Reporting Issues
 

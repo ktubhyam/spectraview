@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.1.0] — 2026-02-25
 
 ### Added
 
@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - JSON parser with flexible key names
 - Peak detection with prominence filtering
 - Peak marker annotations
-- Region selection and highlighting
+- Region highlighting
 - Crosshair with coordinate readout
 - Toolbar with zoom controls
 - Light and dark themes
@@ -29,3 +29,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - `useSpectrumData` hook for file loading and state management
 - `useExport` hook for data and image export
 - Full TypeScript type definitions
+- 52 tests (parsers, utilities, scales, colors, peaks)

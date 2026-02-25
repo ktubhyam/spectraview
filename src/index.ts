@@ -32,9 +32,15 @@ export { useSpectrumData } from "./hooks/useSpectrumData";
 export { useExport } from "./hooks/useExport";
 export { useRegionSelect } from "./hooks/useRegionSelect";
 export { useResizeObserver } from "./hooks/useResizeObserver";
+export { useKeyboardNavigation } from "./hooks/useKeyboardNavigation";
 export { StackedView } from "./components/StackedView/StackedView";
 export { ExportMenu } from "./components/ExportMenu/ExportMenu";
 export { generateSvg, downloadSvg, LINE_DASH_PATTERNS } from "./utils/svg-export";
+export {
+  prefersReducedMotion,
+  generateChartDescription,
+  KEYBOARD_SHORTCUTS,
+} from "./utils/a11y";
 
 // Parsers
 export { parseJcamp } from "./parsers/jcamp";
@@ -87,5 +93,6 @@ export type { CrosshairPosition, CrosshairProps } from "./components/Crosshair/C
 export type { LegendProps } from "./components/Legend/Legend";
 export type { DropZoneProps } from "./components/DropZone/DropZone";
 export type { UseRegionSelectOptions, UseRegionSelectReturn } from "./hooks/useRegionSelect";
+export type { UseKeyboardNavigationOptions } from "./hooks/useKeyboardNavigation";
 export type { ExportMenuProps } from "./components/ExportMenu/ExportMenu";
 export type { SvgExportOptions } from "./utils/svg-export";

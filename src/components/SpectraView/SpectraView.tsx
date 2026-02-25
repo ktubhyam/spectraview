@@ -33,6 +33,8 @@ import { DropZone } from "../DropZone/DropZone";
 import { StackedView } from "../StackedView/StackedView";
 import { useRegionSelect } from "../../hooks/useRegionSelect";
 import { useResizeObserver } from "../../hooks/useResizeObserver";
+import { useKeyboardNavigation } from "../../hooks/useKeyboardNavigation";
+import { generateChartDescription } from "../../utils/a11y";
 
 /** Default chart margins. */
 const DEFAULT_MARGIN: Margin = {
@@ -215,6 +217,19 @@ export function SpectraView(props: SpectraViewProps) {
     setCrosshairPos(null);
   }, []);
 
+  // Keyboard navigation
+  const handleKeyDown = useKeyboardNavigation({
+    onZoomIn: zoomIn,
+    onZoomOut: zoomOut,
+    onReset: resetZoom,
+  });
+
+  // ARIA description
+  const chartDescription = useMemo(
+    () => generateChartDescription(spectra.length, labels.xLabel, labels.yLabel),
+    [spectra.length, labels.xLabel, labels.yLabel],
+  );
+
   const isStacked = config.displayMode === "stacked";
 
   // Empty state
@@ -253,6 +268,10 @@ export function SpectraView(props: SpectraViewProps) {
         overflow: "hidden",
       }}
       className={props.className}
+      role="img"
+      aria-label={chartDescription}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
     >
       {/* Toolbar */}
       {config.showToolbar && (

@@ -36,6 +36,7 @@ export { useExport } from "./hooks/useExport";
 export { useRegionSelect } from "./hooks/useRegionSelect";
 export { useResizeObserver } from "./hooks/useResizeObserver";
 export { useKeyboardNavigation } from "./hooks/useKeyboardNavigation";
+export { useNormalization } from "./hooks/useNormalization";
 export { StackedView } from "./components/StackedView/StackedView";
 export { ExportMenu } from "./components/ExportMenu/ExportMenu";
 export { generateSvg, downloadSvg, LINE_DASH_PATTERNS } from "./utils/svg-export";
@@ -124,5 +125,10 @@ export type { LTTBPoint } from "./utils/lttb";
 export type { SnapPoint } from "./components/Crosshair/Crosshair";
 export type { UseRegionSelectOptions, UseRegionSelectReturn } from "./hooks/useRegionSelect";
 export type { UseKeyboardNavigationOptions } from "./hooks/useKeyboardNavigation";
+export type {
+  NormalizationMode,
+  UseNormalizationOptions,
+  UseNormalizationReturn,
+} from "./hooks/useNormalization";
 export type { ExportMenuProps } from "./components/ExportMenu/ExportMenu";
 export type { SvgExportOptions } from "./utils/svg-export";

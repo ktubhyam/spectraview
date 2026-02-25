@@ -5,6 +5,7 @@
  * for the SpectraView component.
  */
 
+import { memo } from "react";
 import type { Theme } from "../../types";
 
 export interface ToolbarProps {
@@ -44,7 +45,7 @@ const toolbarStyle = (theme: Theme): React.CSSProperties => ({
   borderBottom: `1px solid ${theme === "dark" ? "#374151" : "#e5e7eb"}`,
 });
 
-export function Toolbar({
+export const Toolbar = memo(function Toolbar({
   onZoomIn,
   onZoomOut,
   onReset,
@@ -86,4 +87,4 @@ export function Toolbar({
       </button>
     </div>
   );
-}
+});

@@ -4,6 +4,7 @@
  * Supports hover highlighting and click-to-toggle visibility.
  */
 
+import { memo } from "react";
 import type { Spectrum, Theme } from "../../types";
 import { getSpectrumColor } from "../../utils/colors";
 
@@ -89,7 +90,7 @@ const swatchStyle = (
   flexShrink: 0,
 });
 
-export function Legend({
+export const Legend = memo(function Legend({
   spectra,
   theme,
   position,
@@ -138,4 +139,4 @@ export function Legend({
       })}
     </div>
   );
-}
+});

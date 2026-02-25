@@ -8,6 +8,7 @@
 import type { ScaleLinear } from "d3-scale";
 import type { Spectrum, LineStyle } from "../types";
 import { getSpectrumColor } from "./colors";
+import { lttbDownsample } from "./lttb";
 
 /** Default line width for spectrum rendering. */
 const LINE_WIDTH = 1.5;
@@ -21,9 +22,9 @@ const CANVAS_DASH_PATTERNS: Record<LineStyle, number[]> = {
 };
 
 /**
- * Threshold: if visible points exceed this count, apply min-max decimation.
- * Each pixel bin keeps up to 4 values (first, min, max, last) so we
- * draw at most plotWidth * 4 points — plenty of visual fidelity.
+ * Threshold: if visible points exceed this count, apply LTTB downsampling.
+ * Target output is plotWidth * 2 points — enough visual fidelity for
+ * sub-pixel accuracy while dramatically reducing draw calls.
  */
 const DECIMATION_THRESHOLD = 2000;
 
@@ -36,88 +37,6 @@ export function clearCanvas(
   height: number,
 ): void {
   ctx.clearRect(0, 0, width, height);
-}
-
-/**
- * Min-max decimation: group visible points into pixel-width bins and keep
- * first/min/max/last per bin. This preserves visual shape while reducing
- * path complexity from O(N) to O(pixelWidth).
- */
-function decimateMinMax(
-  x: Float64Array | number[],
-  y: Float64Array | number[],
-  startIdx: number,
-  endIdx: number,
-  xScale: ScaleLinear<number, number>,
-  yScale: ScaleLinear<number, number>,
-  plotWidth: number,
-): Array<{ px: number; py: number }> {
-  const numBins = Math.max(Math.ceil(plotWidth), 1);
-  const rangeMin = xScale.range()[0] as number;
-  const rangeMax = xScale.range()[1] as number;
-  const rangeSpan = Math.abs(rangeMax - rangeMin);
-
-  // Build bins
-  const bins: Array<{
-    minY: number;
-    maxY: number;
-    minYIdx: number;
-    maxYIdx: number;
-    firstIdx: number;
-    lastIdx: number;
-    count: number;
-  }> = Array.from({ length: numBins }, () => ({
-    minY: Infinity,
-    maxY: -Infinity,
-    minYIdx: -1,
-    maxYIdx: -1,
-    firstIdx: -1,
-    lastIdx: -1,
-    count: 0,
-  }));
-
-  for (let i = startIdx; i < endIdx; i++) {
-    const px = xScale(x[i] as number);
-    const bin = Math.min(
-      Math.max(Math.floor(((px - Math.min(rangeMin, rangeMax)) / rangeSpan) * numBins), 0),
-      numBins - 1,
-    );
-
-    const yVal = y[i] as number;
-    const b = bins[bin];
-    if (b.count === 0) b.firstIdx = i;
-    b.lastIdx = i;
-    if (yVal < b.minY) {
-      b.minY = yVal;
-      b.minYIdx = i;
-    }
-    if (yVal > b.maxY) {
-      b.maxY = yVal;
-      b.maxYIdx = i;
-    }
-    b.count++;
-  }
-
-  // Flatten bins into points (first, min, max, last — in index order)
-  const points: Array<{ px: number; py: number }> = [];
-
-  for (const b of bins) {
-    if (b.count === 0) continue;
-    if (b.count === 1) {
-      points.push({ px: xScale(x[b.firstIdx] as number), py: yScale(y[b.firstIdx] as number) });
-      continue;
-    }
-
-    // Collect unique indices in original order
-    const indices = [b.firstIdx, b.minYIdx, b.maxYIdx, b.lastIdx];
-    const unique = [...new Set(indices)].sort((a, c) => a - c);
-
-    for (const idx of unique) {
-      points.push({ px: xScale(x[idx] as number), py: yScale(y[idx] as number) });
-    }
-  }
-
-  return points;
 }
 
 /**
@@ -179,8 +98,9 @@ export function drawSpectrum(
   ctx.setLineDash(dashPattern);
 
   if (visibleCount > DECIMATION_THRESHOLD) {
-    // Decimated path: min-max binning
-    const points = decimateMinMax(spectrum.x, spectrum.y, startIdx, endIdx, xScale, yScale, plotWidth);
+    // LTTB downsampled path: visually optimal point selection
+    const targetPoints = Math.max(Math.ceil(plotWidth * 2), 200);
+    const points = lttbDownsample(spectrum.x, spectrum.y, startIdx, endIdx, xScale, yScale, targetPoints);
     if (points.length > 0) {
       ctx.moveTo(points[0].px, points[0].py);
       for (let i = 1; i < points.length; i++) {

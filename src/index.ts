@@ -43,6 +43,7 @@ export {
   KEYBOARD_SHORTCUTS,
 } from "./utils/a11y";
 export { binarySearchClosest, snapToNearestSpectrum } from "./utils/snap";
+export { lttbDownsample } from "./utils/lttb";
 
 // Parsers
 export { parseJcamp } from "./parsers/jcamp";
@@ -97,6 +98,7 @@ export type { LegendProps } from "./components/Legend/Legend";
 export type { DropZoneProps } from "./components/DropZone/DropZone";
 export type { AnnotationLayerProps } from "./components/AnnotationLayer/AnnotationLayer";
 export type { SnapResult } from "./utils/snap";
+export type { LTTBPoint } from "./utils/lttb";
 export type { SnapPoint } from "./components/Crosshair/Crosshair";
 export type { UseRegionSelectOptions, UseRegionSelectReturn } from "./hooks/useRegionSelect";
 export type { UseKeyboardNavigationOptions } from "./hooks/useKeyboardNavigation";

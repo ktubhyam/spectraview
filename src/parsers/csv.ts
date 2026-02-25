@@ -7,6 +7,9 @@
 
 import type { Spectrum } from "../types";
 
+/** Auto-incrementing ID counter for unique spectrum IDs. */
+let idCounter = 0;
+
 export interface CsvParseOptions {
   /** Column delimiter (auto-detected if not provided). */
   delimiter?: string;
@@ -107,7 +110,7 @@ export function parseCsv(text: string, options: CsvParseOptions = {}): Spectrum 
   }
 
   return {
-    id: `csv-${Date.now()}`,
+    id: `csv-${++idCounter}`,
     label: headerLabel,
     x: new Float64Array(xValues),
     y: new Float64Array(yValues),
@@ -168,7 +171,7 @@ export function parseCsvMulti(
   const xArray = new Float64Array(xValues);
 
   return yArrays.map((yArr, i) => ({
-    id: `csv-${Date.now()}-${i}`,
+    id: `csv-${++idCounter}`,
     label: label ?? headers?.[i + 1] ?? `Spectrum ${i + 1}`,
     x: xArray,
     y: new Float64Array(yArr),

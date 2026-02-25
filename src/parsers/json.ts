@@ -6,6 +6,9 @@
 
 import type { Spectrum, SpectrumType } from "../types";
 
+/** Auto-incrementing ID counter for unique spectrum IDs. */
+let idCounter = 0;
+
 /**
  * JSON spectrum format: object with x and y arrays.
  *
@@ -103,7 +106,7 @@ function parseSingleJson(input: JsonSpectrumInput, index: number): Spectrum {
   const label = input.label ?? input.title ?? input.name ?? `Spectrum ${index + 1}`;
 
   return {
-    id: `json-${Date.now()}-${index}`,
+    id: `json-${++idCounter}`,
     label,
     x: new Float64Array(xRaw),
     y: new Float64Array(yRaw),

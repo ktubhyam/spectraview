@@ -5,7 +5,7 @@
  * Redraws on zoom/pan transform changes and spectrum data changes.
  */
 
-import { useEffect, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import type { ScaleLinear } from "d3-scale";
 import type { Spectrum } from "../../types";
 import { drawAllSpectra } from "../../utils/rendering";
@@ -25,53 +25,54 @@ export interface SpectrumCanvasProps {
   highlightedId?: string;
 }
 
-export function SpectrumCanvas({
-  spectra,
-  xScale,
-  yScale,
-  width,
-  height,
-  highlightedId,
-}: SpectrumCanvasProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dprRef = useRef(1);
+export const SpectrumCanvas = forwardRef<HTMLCanvasElement, SpectrumCanvasProps>(
+  function SpectrumCanvas(
+    { spectra, xScale, yScale, width, height, highlightedId },
+    ref,
+  ) {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const dprRef = useRef(1);
 
-  // Set up canvas DPR only when dimensions change (avoids flicker on zoom)
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    // Expose the internal canvas ref to parent via forwarded ref
+    useImperativeHandle(ref, () => canvasRef.current!, []);
 
-    const dpr = window.devicePixelRatio || 1;
-    dprRef.current = dpr;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-  }, [width, height]);
+    // Set up canvas DPR only when dimensions change (avoids flicker on zoom)
+    useEffect(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-  // Redraw spectra when data or scales change
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+      const dpr = window.devicePixelRatio || 1;
+      dprRef.current = dpr;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+    }, [width, height]);
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    // Redraw spectra when data or scales change
+    useEffect(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-    const dpr = dprRef.current;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    drawAllSpectra(ctx, spectra, xScale, yScale, width, height, highlightedId);
-  }, [spectra, xScale, yScale, width, height, highlightedId]);
+      const dpr = dprRef.current;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        width,
-        height,
-        position: "absolute",
-        top: 0,
-        left: 0,
-        pointerEvents: "none",
-      }}
-    />
-  );
-}
+      drawAllSpectra(ctx, spectra, xScale, yScale, width, height, highlightedId);
+    }, [spectra, xScale, yScale, width, height, highlightedId]);
+
+    return (
+      <canvas
+        ref={canvasRef}
+        style={{
+          width,
+          height,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          pointerEvents: "none",
+        }}
+      />
+    );
+  },
+);

@@ -76,7 +76,7 @@ function inferLabels(
 }
 
 export function SpectraView(props: SpectraViewProps) {
-  const { spectra, peaks = [], regions = [], onPeakClick, onViewChange, onCrosshairMove } =
+  const { spectra, peaks = [], regions = [], onPeakClick, onViewChange, onCrosshairMove, canvasRef } =
     props;
 
   // Unique ID for this instance to avoid clipPath collisions (BUG-1 fix)
@@ -235,6 +235,7 @@ export function SpectraView(props: SpectraViewProps) {
           }}
         >
           <SpectrumCanvas
+            ref={canvasRef}
             spectra={spectra}
             xScale={zoomedXScale}
             yScale={zoomedYScale}

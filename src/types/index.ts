@@ -115,6 +115,8 @@ export interface SpectraViewProps {
   theme?: Theme;
   /** Custom CSS class name. */
   className?: string;
+  /** Ref to access the underlying Canvas element (for export). */
+  canvasRef?: React.RefObject<HTMLCanvasElement | null>;
   /** Callback when user clicks a peak marker. */
   onPeakClick?: (peak: Peak) => void;
   /** Callback when zoom/pan state changes. */

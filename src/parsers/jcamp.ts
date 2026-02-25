@@ -10,6 +10,9 @@
 
 import type { Spectrum, SpectrumType } from "../types";
 
+/** Auto-incrementing ID counter for unique spectrum IDs. */
+let idCounter = 0;
+
 /**
  * Minimal shape of jcampconverter output (to avoid hard dependency).
  */
@@ -95,7 +98,7 @@ function parseWithConverter(
     }
 
     return {
-      id: `jcamp-${Date.now()}-${i}`,
+      id: `jcamp-${++idCounter}`,
       label: entry.info?.TITLE ?? `Spectrum ${i + 1}`,
       x: new Float64Array(firstSpectrum.x),
       y: new Float64Array(firstSpectrum.y),
@@ -182,7 +185,7 @@ function parseBasicJcamp(text: string): Spectrum {
   }
 
   return {
-    id: `jcamp-${Date.now()}`,
+    id: `jcamp-${++idCounter}`,
     label: info["TITLE"] ?? "JCAMP Spectrum",
     x: new Float64Array(xValues),
     y: new Float64Array(yValues),

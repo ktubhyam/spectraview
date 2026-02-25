@@ -1,6 +1,6 @@
 {
   "name": "spectraview",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Interactive React component for vibrational spectroscopy (IR, Raman, NIR)",
   "author": "Tubhyam Karthikeyan <takarthikeyan25@gmail.com>",
   "license": "MIT",
@@ -22,8 +22,17 @@
     "viewer",
     "visualization",
     "JCAMP-DX",
+    "SPC",
     "chemistry",
-    "scientific"
+    "scientific",
+    "canvas",
+    "d3",
+    "chart",
+    "data-visualization",
+    "peak-detection",
+    "baseline-correction",
+    "savitzky-golay",
+    "normalization"
   ],
   "type": "module",
   "main": "./dist/index.cjs",

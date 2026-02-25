@@ -49,6 +49,7 @@ export { lttbDownsample } from "./utils/lttb";
 export { parseJcamp } from "./parsers/jcamp";
 export { parseCsv, parseCsvMulti } from "./parsers/csv";
 export { parseJson } from "./parsers/json";
+export { parseSpc } from "./parsers/spc";
 
 // Utilities
 export { detectPeaks } from "./utils/peaks";

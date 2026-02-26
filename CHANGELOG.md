@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.5
+
+### Patch Changes
+
+- 8cf6426: Add GitHub Packages publishing workflow
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/),

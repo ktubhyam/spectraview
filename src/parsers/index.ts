@@ -8,3 +8,4 @@ export { parseJcamp } from "./jcamp";
 export { parseCsv, parseCsvMulti } from "./csv";
 export type { CsvParseOptions } from "./csv";
 export { parseJson } from "./json";
+export { parseSpc } from "./spc";

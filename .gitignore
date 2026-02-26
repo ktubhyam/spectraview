@@ -2,9 +2,24 @@ node_modules/
 dist/
 coverage/
 *.tgz
+*.log
 .DS_Store
 .env
 .env.local
+.env.*
 
+# Storybook
 *storybook.log
-storybook-static
+storybook-static/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code
+.claude/
+
+# OS
+Thumbs.db

@@ -20,3 +20,16 @@ export { useRegionSelect } from "./useRegionSelect";
 export type { UseRegionSelectOptions, UseRegionSelectReturn } from "./useRegionSelect";
 
 export { useResizeObserver } from "./useResizeObserver";
+
+export { useKeyboardNavigation } from "./useKeyboardNavigation";
+export type { UseKeyboardNavigationOptions } from "./useKeyboardNavigation";
+
+export { useNormalization } from "./useNormalization";
+export type {
+  NormalizationMode,
+  UseNormalizationOptions,
+  UseNormalizationReturn,
+} from "./useNormalization";
+
+export { useHistory } from "./useHistory";
+export type { UseHistoryOptions, UseHistoryReturn } from "./useHistory";

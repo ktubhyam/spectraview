@@ -1,0 +1,37 @@
+name: Publish to GitHub Packages
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish-gpr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: "https://npm.pkg.github.com"
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Publish to GitHub Packages
+        run: |
+          node -e "
+            const p = JSON.parse(require('fs').readFileSync('package.json','utf8'));
+            p.name = '@ktubhyam/spectraview';
+            p.publishConfig = { registry: 'https://npm.pkg.github.com' };
+            require('fs').writeFileSync('package.json', JSON.stringify(p, null, 2));
+          "
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

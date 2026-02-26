@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.8.3] — 2026-02-26
+
+### Fixed
+
+- Sub-module barrel exports: added 4 missing components (AnnotationLayer, Minimap, Tooltip, DataTable), 3 hooks (useKeyboardNavigation, useNormalization, useHistory), 1 parser (parseSpc), 7 util modules
+- CITATION.cff version updated to 1.8.2
+- `.gitignore` expanded with `.claude/`, IDE dirs, `*.log`, OS files
+- Removed stale `debug-storybook.log` and unused `vitest.shims.d.ts`
+- Added `engines: { node: ">=18" }` to package.json
+
 ## [1.8.2] — 2026-02-26
 
 ### Added

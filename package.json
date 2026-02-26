@@ -1,6 +1,6 @@
 {
   "name": "spectraview",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "Interactive React component for vibrational spectroscopy (IR, Raman, NIR)",
   "author": "Tubhyam Karthikeyan <takarthikeyan25@gmail.com>",
   "license": "MIT",

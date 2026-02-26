@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.8.2] — 2026-02-26
+
+### Added
+
+- ESLint 9 flat config with TypeScript, React, and React Hooks rules
+- Test coverage reporting in CI with PR comments and dynamic badge
+- Tests for StackedView (8), useExport (9), useResizeObserver (8) — 25 new tests
+- Coverage badge in README
+
+### Fixed
+
+- `Tooltip.tsx`: React rules-of-hooks violation (early return before useMemo)
+- `spc.ts`: `let` → `const` for single-assignment variable
+- README: `pip install spectrakit` → `pip install pyspectrakit`
+
 ## [1.8.1] — 2026-02-26
 
 ### Added

@@ -9,6 +9,7 @@ Interactive React component for vibrational spectroscopy (IR, Raman, NIR).
 [![CI](https://img.shields.io/github/actions/workflow/status/ktubhyam/spectraview/ci.yml?branch=main)](https://github.com/ktubhyam/spectraview/actions)
 [![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/ktubhyam/spectraview/coverage-badges/coverage.json)](https://github.com/ktubhyam/spectraview/actions/workflows/ci.yml)
 [![Storybook](https://img.shields.io/badge/storybook-deployed-ff4785)](https://ktubhyam.github.io/spectraview/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18802444.svg)](https://doi.org/10.5281/zenodo.18802444)
 
 ## Features
 

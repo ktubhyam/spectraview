@@ -1,0 +1,39 @@
+{
+  "title": "SpectraView",
+  "description": "React component library for interactive spectral data visualization with Canvas+SVG hybrid rendering.",
+  "creators": [
+    {
+      "name": "Karthikeyan, Tubhyam",
+      "orcid": "0009-0001-4424-7297",
+      "affiliation": "Institute of Chemical Technology, Mumbai"
+    }
+  ],
+  "license": "MIT",
+  "upload_type": "software",
+  "access_right": "open",
+  "keywords": [
+    "spectroscopy",
+    "visualization",
+    "React",
+    "data visualization",
+    "scientific computing",
+    "TypeScript"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://tubhyam.dev/libraries/spectraview",
+      "relation": "isDocumentedBy",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/ktubhyam/spectraview",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://www.npmjs.com/package/spectraview",
+      "relation": "isIdenticalTo",
+      "scheme": "url"
+    }
+  ]
+}
